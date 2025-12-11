@@ -58,4 +58,4 @@ Python 3.x (for ETL script)
 Modern browser (Chrome, Firefox, Edge)
 
 ##GitHub Repository
-Repository link: https://github.com/YourUsername/bloodbank-directory
+Repository link: https://github.com/KomalNehete/bloodbank-directory
