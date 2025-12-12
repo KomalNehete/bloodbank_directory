@@ -1,0 +1,17 @@
+{
+  "name": "bloodbank_directory",
+  "version": "1.0.0",
+  "description": "The Blood Bank Directory is a lightweight PHP web application that lists all blood banks in a selected Indian state.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KomalNehete/bloodbank_directory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/KomalNehete/bloodbank_directory#readme"
+}
