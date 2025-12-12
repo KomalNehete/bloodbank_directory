@@ -1,9 +1,8 @@
 <?php
-$host = "sql113.infinityfree.com";   // your MySQL host from InfinityFree
-$db   = "if0_40664898_bloodbank
-"; // your database name
-$user = "if0_40664898";       // your database username
-$pass = "Ibf4k2KnDiL";   // your InfinityFree account password
+$host = "fdb1032.awardspace.net";   // your MySQL host from InfinityFree
+$db   = "4717467_bloodbank"; // your database name
+$user = "4717467_bloodbank";       // your database username
+$pass = "gT2Z5hLF7pm";   // your InfinityFree account password
 
 $conn = new mysqli($host, $user, $pass, $db);
 
