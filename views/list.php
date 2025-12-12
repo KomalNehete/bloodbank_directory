@@ -1,81 +1,69 @@
 <?php
+// Fetch all institutes
 $institutes = Institute::getAll($conn);
+
+// Get unique districts for dropdown
+$districts = [];
+foreach($institutes as $i){
+    $district_name = $i['location']; // Assuming 'location' contains district
+    if(!in_array($district_name, $districts)) {
+        $districts[] = $district_name;
+    }
+}
+
+// Apply filters if submitted
+$filter_type = $_GET['type'] ?? '';
+$filter_district = $_GET['district'] ?? '';
+$search_name = $_GET['search'] ?? '';
+
+$filtered = array_filter($institutes, function($i) use($filter_type, $filter_district, $search_name){
+    $match_type = !$filter_type || $i['type'] === $filter_type;
+    $match_district = !$filter_district || strpos($i['location'], $filter_district) !== false;
+    $match_name = !$search_name || stripos($i['name'], $search_name) !== false;
+    return $match_type && $match_district && $match_name;
+});
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blood Bank Directory</title>
-    
-    <!-- Bootstrap CDN for easy responsive design -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <style>
-        body {
-            background-color: #f7f7f7;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #d32f2f;
-            margin-bottom: 30px;
-        }
-
-        .table-wrapper {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        table {
-            width: 100%;
-        }
-
-        th {
-            background-color: #d32f2f;
-            color: #fff;
-        }
-
-        td, th {
-            padding: 12px;
-            text-align: left;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        /* Hover effect */
-        tr:hover {
-            background-color: #ffe5e5;
-        }
-
-        /* Footer styling */
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 15px;
-            color: #555;
-        }
-    </style>
 </head>
 <body>
+<div class="container mt-5">
+    <h1 class="text-center text-danger mb-4">Blood Bank Directory</h1>
 
-<div class="container">
-    <h1>Blood Bank Directory</h1>
-    
-    <div class="table-wrapper">
-        <table class="table table-striped table-bordered">
-            <thead>
+    <!-- Filter Form -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <select name="type" class="form-select">
+                <option value="">All Types</option>
+                <option value="charitable" <?= ($filter_type=='charitable')?'selected':'' ?>>Charitable</option>
+                <option value="private" <?= ($filter_type=='private')?'selected':'' ?>>Private</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="district" class="form-select">
+                <option value="">All Districts</option>
+                <?php foreach($districts as $d): ?>
+                    <option value="<?= htmlspecialchars($d) ?>" <?= ($filter_district==$d)?'selected':'' ?>><?= htmlspecialchars($d) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by Name" value="<?= htmlspecialchars($search_name) ?>">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-danger w-100">Filter</button>
+        </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-danger">
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -85,10 +73,10 @@ $institutes = Institute::getAll($conn);
                 </tr>
             </thead>
             <tbody>
-                <?php if(empty($institutes)): ?>
-                    <tr><td colspan="5" class="text-center">No data available</td></tr>
+                <?php if(empty($filtered)): ?>
+                    <tr><td colspan="5" class="text-center">No results found</td></tr>
                 <?php else: ?>
-                    <?php foreach($institutes as $i): ?>
+                    <?php foreach($filtered as $i): ?>
                         <tr>
                             <td><?= htmlspecialchars($i['public_id']) ?></td>
                             <td><?= htmlspecialchars($i['name']) ?></td>
@@ -103,11 +91,6 @@ $institutes = Institute::getAll($conn);
     </div>
 </div>
 
-<footer>
-    &copy; <?= date('Y') ?> Blood Bank Directory. All rights reserved.
-</footer>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
