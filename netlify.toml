@@ -2,4 +2,8 @@
   publish = "public"
 
 [functions]
-  directory = "functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["php"]
+
+[[plugins]]
+  package = "@netlify/plugin-php"
